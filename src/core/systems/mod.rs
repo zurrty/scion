@@ -22,6 +22,7 @@ use crate::core::systems::asset_ref_resolver_system::MaterialAssetResolverFn;
 use crate::core::systems::collider_systems::{compute_collisions_system, debug_colliders_system};
 use crate::core::systems::default_camera_system::camera_dpi_system;
 use crate::core::systems::default_camera_system::default_camera_system;
+use crate::core::systems::developer_console_system::developer_console_system;
 use crate::core::systems::hide_propagation_system::{
     hide_propagated_deletion_system, hide_propagation_system,
 };
@@ -40,6 +41,7 @@ pub(crate) mod hierarchy_system;
 pub(crate) mod missing_ui_component_system;
 pub(crate) mod parent_transform_system;
 pub(crate) mod ui_text_system;
+pub(crate) mod developer_console_system;
 
 pub(crate) struct InternalPackage;
 impl Package for InternalPackage {
@@ -84,5 +86,6 @@ impl Package for InternalPackage {
             .with_system(dirty_child_system)
             .with_system(dirty_transform_system)
             .with_system(compute_collisions_system)
+            .with_system(developer_console_system)
     }
 }

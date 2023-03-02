@@ -24,7 +24,7 @@ impl Default for PollConfiguration {
 
 /// `EventError` represents the different error that any event Result can return
 #[derive(Debug)]
-pub enum EventError {
+pub enum ScionEventError {
     TopicAlreadyExist,
     TopicDoesNotExist,
     SubscriberIdDoesNotExist,
@@ -43,9 +43,9 @@ impl Events {
         &mut self,
         topic_name: &str,
         topic_configuration: TopicConfiguration,
-    ) -> Result<(), EventError> {
+    ) -> Result<(), ScionEventError> {
         if self.topics.contains_key(topic_name) {
-            Err(EventError::TopicAlreadyExist)
+            Err(ScionEventError::TopicAlreadyExist)
         } else {
             let topic_string = topic_name.to_string();
             self.topics.insert(topic_string.clone(), Topic::new(topic_string, topic_configuration));
@@ -53,13 +53,17 @@ impl Events {
         }
     }
 
+    pub fn topic_exists(&self, topic_name: &str) -> bool {
+        self.topics.contains_key(topic_name)
+    }
+
     /// Publish an event into the topic `topic_name`
-    pub fn publish<T>(&mut self, topic_name: &str, event: T) -> Result<(), EventError>
+    pub fn publish<T>(&mut self, topic_name: &str, event: T) -> Result<(), ScionEventError>
     where
         T: ser::Serialize,
     {
         if !self.topics.contains_key(topic_name) {
-            Err(EventError::TopicDoesNotExist)
+            Err(ScionEventError::TopicDoesNotExist)
         } else {
             let message = to_string(&event).unwrap();
             self.topics
@@ -75,9 +79,9 @@ impl Events {
         &mut self,
         topic_name: &str,
         poll_configuration: PollConfiguration,
-    ) -> Result<SubscriberId, EventError> {
+    ) -> Result<SubscriberId, ScionEventError> {
         if !self.topics.contains_key(topic_name) {
-            Err(EventError::TopicDoesNotExist)
+            Err(ScionEventError::TopicDoesNotExist)
         } else {
             let next_id = self.subscribers.keys().max().map_or(0, |r| r + 1);
             self.subscribers.insert(
@@ -97,7 +101,7 @@ impl Events {
     }
 
     /// Retrieves a list of events using `subscriber_id` subscription to a topic
-    pub fn poll<T>(&mut self, subscriber_id: &SubscriberId) -> Result<VecDeque<T>, EventError>
+    pub fn poll<T>(&mut self, subscriber_id: &SubscriberId) -> Result<VecDeque<T>, ScionEventError>
     where
         T: DeserializeOwned,
     {
@@ -123,7 +127,7 @@ impl Events {
             *cursor += polled.len();
             return Ok(polled);
         }
-        Err(EventError::SubscriberIdDoesNotExist)
+        Err(ScionEventError::SubscriberIdDoesNotExist)
     }
 
     pub(crate) fn cleanup(&mut self) {

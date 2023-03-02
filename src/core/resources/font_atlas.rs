@@ -88,7 +88,10 @@ pub(crate) fn generate_bitmap(font: crate::core::components::ui::font::Font, fon
                 let font = FontVec::try_from_vec(res);
                 if let Ok(font_vec) = font {
                     let mut glyphs = Vec::<Glyph>::new();
-                    let scale = PxScale::from(font_size as f32);
+                    let units_per_em = font_vec.units_per_em().unwrap();
+                    let height = font_vec.height_unscaled();
+                    let px_size = font_size as f32 * height / units_per_em;
+                    let scale = PxScale::from(px_size).round();
                     let scaled_font = font_vec.as_scaled(scale);
                     layout_paragraph(scaled_font, point(20.0, 20.0), 9999.0, TEXT, &mut glyphs);
                     let glyphs_height = scaled_font.height().ceil() as u32;
@@ -121,6 +124,7 @@ pub(crate) fn generate_bitmap(font: crate::core::components::ui::font::Font, fon
                             character_positions.insert(TEXT.to_string().chars().nth(pos).unwrap(), char_pos);
                         }
                     }
+                    image.save(Path::new("image.png"));
                     return Ok(TrueTypeData {
                         texture: Some(Texture {
                             bytes: image.to_vec(),

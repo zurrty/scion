@@ -41,17 +41,17 @@ impl Scene for MainScene {
 fn add_score_ui(data: &mut GameData) -> Entity {
     // First we add an UiText to the world
     let font = Font::TrueType {
-        font_path: asset_path().join("rainyhearts.ttf").get(),
+        font_path: asset_path().join("sourcecodepro.ttf").get(),
     };
     let font_asset = data.assets_mut().register_font(font);
 
-    let txt = UiText::new("SCORE".to_string(), font_asset.clone()).with_font_size(32).with_font_color(Color::new_rgb(0,0,0));
+    let txt = UiText::new("Whereas recognition of the inherent dignity".to_string(), font_asset.clone()).with_font_size(16).with_font_color(Color::new_rgb(255,255,255));
     let mut transform = Transform::from_xyz(394., 250., 2);
 
     data.push((txt, transform));
 
     let txt = UiText::new("".to_string(), font_asset)
-        .sync_value(|res| res.get_resource::<TetrisResource>().unwrap().get_score()).with_font_size(32);
+        .sync_value(|res| res.get_resource::<TetrisResource>().unwrap().get_score()).with_font_size(16);
 
     let mut transform = Transform::from_xyz(394., 290., 2);
     data.push((txt, transform))

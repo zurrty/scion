@@ -18,6 +18,7 @@ use hecs::{
     Component, ComponentError, DynamicBundle, Entity, NoSuchEntity, Query, QueryBorrow, QueryItem,
     QueryMut, QueryOne, QueryOneError,
 };
+use crate::core::resources::developer_console::DeveloperConsole;
 use crate::core::resources::font_atlas::FontAtlas;
 
 pub trait World {
@@ -133,6 +134,9 @@ impl GameData {
     pub(crate) fn font_atlas(&self) -> AtomicRefMut<FontAtlas> {
         self.get_resource_mut::<FontAtlas>()
             .expect("The engine is missing the mandatory font_atlas resource")
+    }
+    pub fn add_developer_console(&mut self) {
+        self.resources.insert_resource(DeveloperConsole::default());
     }
 }
 
@@ -340,6 +344,10 @@ impl Resources {
     pub(crate) fn font_atlas(&self) -> AtomicRefMut<FontAtlas> {
         self.get_resource_mut::<FontAtlas>()
             .expect("The engine is missing the mandatory font_atlas resource")
+    }
+
+    fn add_developer_console(&mut self) {
+        self.insert_resource(DeveloperConsole::default());
     }
 }
 

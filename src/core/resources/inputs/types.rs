@@ -44,6 +44,7 @@ pub enum KeyCode {
     Y,
     Z,
     Space,
+    F12
 }
 
 impl From<VirtualKeyCode> for KeyCode {
@@ -80,6 +81,7 @@ impl From<VirtualKeyCode> for KeyCode {
             VirtualKeyCode::X => KeyCode::X,
             VirtualKeyCode::Y => KeyCode::Y,
             VirtualKeyCode::Z => KeyCode::Z,
+            VirtualKeyCode::F12 => KeyCode::F12,
             VirtualKeyCode::Space => KeyCode::Space,
             _ => KeyCode::Any,
         }
